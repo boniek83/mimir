@@ -3603,7 +3603,6 @@ func prepare(t *testing.T, cfg prepConfig) ([]*Distributor, []mockIngester, []*p
 		if cfg.limits == nil {
 			cfg.limits = &validation.Limits{}
 			flagext.DefaultValues(cfg.limits)
-			cfg.limits.QueryIngestersWithin = model.Duration(time.Hour)
 		}
 
 		var distributorCfg Config
@@ -3620,6 +3619,7 @@ func prepare(t *testing.T, cfg prepConfig) ([]*Distributor, []mockIngester, []*p
 		distributorCfg.DefaultLimits.MaxInflightPushRequestsBytes = cfg.maxInflightRequestsBytes
 		distributorCfg.DefaultLimits.MaxIngestionRate = cfg.maxIngestionRate
 		distributorCfg.ShuffleShardingIngestersEnabled = true
+		distributorCfg.IngesterTSDBRetention = time.Hour
 
 		if cfg.forwarding {
 			distributorCfg.Forwarding.Enabled = true
