@@ -63,6 +63,24 @@ func TestPreallocTimeseriesSliceFromPool(t *testing.T) {
 	})
 }
 
+func BenchmarkPreallocTimeseriesSliceFromPool(b *testing.B) {
+	b.Run("sequential", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			slice := PreallocTimeseriesSliceFromPool()
+			ReuseSlice(slice)
+		}
+	})
+
+	b.Run("parallel", func(b *testing.B) {
+		b.RunParallel(func(pb *testing.PB) {
+			for pb.Next() {
+				slice := PreallocTimeseriesSliceFromPool()
+				ReuseSlice(slice)
+			}
+		})
+	})
+}
+
 func TestTimeseriesFromPool(t *testing.T) {
 	t.Run("new instance is provided when not available to reuse", func(t *testing.T) {
 		first := TimeseriesFromPool()
