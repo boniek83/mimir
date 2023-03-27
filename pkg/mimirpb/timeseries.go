@@ -23,16 +23,15 @@ const (
 )
 
 var (
-
-	/*
-		We cannot pool these as pointer-to-slice because the place we use them is in WriteRequest which is generated from Protobuf
-		and we don't have an option to make it a pointer. There is overhead here 24 bytes of garbage every time a PreallocTimeseries
-		is re-used. But since the slices are far far larger, we come out ahead.
-	*/
 	slicePool = sync.Pool{
-		New: func() interface{} {
-			return make([]PreallocTimeseries, 0, expectedTimeseries)
+		New: func() any {
+			b := make([]PreallocTimeseries, 0, expectedTimeseries)
+			return &b
 		},
+	}
+	// slicePointersPool holds the pointers got from slicePool while the slices are being used, so we can reuse them later to put them back to slicePool.
+	slicePointersPool = sync.Pool{
+		New: func() any { return new([]PreallocTimeseries) },
 	}
 
 	timeSeriesPool = sync.Pool{
@@ -284,7 +283,10 @@ func (bs *LabelAdapter) Compare(other LabelAdapter) int {
 // PreallocTimeseriesSliceFromPool retrieves a slice of PreallocTimeseries from a sync.Pool.
 // ReuseSlice should be called once done.
 func PreallocTimeseriesSliceFromPool() []PreallocTimeseries {
-	return slicePool.Get().([]PreallocTimeseries)
+	p := slicePool.Get().(*[]PreallocTimeseries)
+	pts := *p
+	slicePointersPool.Put(p)
+	return pts
 }
 
 // ReuseSlice puts the slice back into a sync.Pool for reuse.
@@ -297,7 +299,9 @@ func ReuseSlice(ts []PreallocTimeseries) {
 		ReusePreallocTimeseries(&ts[i])
 	}
 
-	slicePool.Put(ts[:0]) //nolint:staticcheck //see comment on slicePool for more details
+	p := slicePointersPool.Get().(*[]PreallocTimeseries)
+	*p = ts[:0]
+	slicePool.Put(p)
 }
 
 // TimeseriesFromPool retrieves a pointer to a TimeSeries from a sync.Pool.

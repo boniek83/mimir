@@ -50,6 +50,17 @@ func TestPreallocTimeseriesSliceFromPool(t *testing.T) {
 		reused := PreallocTimeseriesSliceFromPool()
 		assert.Len(t, reused, 0)
 	})
+
+	t.Run("does not allocate when reusing again and again", func(t *testing.T) {
+		slice := PreallocTimeseriesSliceFromPool()
+		ReuseSlice(slice)
+
+		allocs := testing.AllocsPerRun(10, func() {
+			slice := PreallocTimeseriesSliceFromPool()
+			ReuseSlice(slice)
+		})
+		require.Equal(t, float64(0), allocs)
+	})
 }
 
 func TestTimeseriesFromPool(t *testing.T) {
