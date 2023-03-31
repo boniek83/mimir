@@ -17,3 +17,15 @@ datasources:
   uid: jaeger
   orgID: 1
   url: http://jaeger:16686/
+- name: Mimir Orig
+  type: prometheus
+  access: proxy
+  uid: mimirorig
+  orgID: 1
+  url: http://querier:8004/prometheus
+- name: Prometheus
+  type: prometheus
+  access: proxy
+  uid: prometheus
+  orgID: 1
+  url: http://prometheus:9090
