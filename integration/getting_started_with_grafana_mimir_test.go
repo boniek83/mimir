@@ -80,6 +80,7 @@ func runTestPushSeriesAndQueryBack(t *testing.T, mimir *e2emimir.MimirService) {
 	now := time.Now()
 	series, expectedVector, expectedMatrix := generateSeries("series_1", now, prompb.Label{Name: "foo", Value: "bar"})
 
+	fmt.Printf("\nHAA push %s\n", seriesName)
 	res, err := c.Push(series)
 	require.NoError(t, err)
 	require.Equal(t, http.StatusOK, res.StatusCode)
