@@ -29,8 +29,7 @@ Entries should include a reference to the Pull Request that introduced the chang
 ## main / unreleased
 
 * [CHANGE] Change number of Memcached max idle connections to 150. #4591
-* [FEATURE] Add external Redis support for chunks-cache, metadata-cache and results-cache. #4348
-* [ENHANCEMENT] Support autoscaling/v2 HorizontalPodAutoscaler for nginx autoscaling starting with Kubernetes 1.23. #4285
+* [FEATURE] Add documentation to use external Redis support for chunks-cache, metadata-cache and results-cache. #4348
 * [ENHANCEMENT] Update the `rollout-operator` subchart to `0.4.0`. #4524
 * [ENHANCEMENT] Update the `memcached-exporter` to `v0.11.2`. #4570
 * [ENHANCEMENT] Update memcached to `memcached:1.6.19-alpine`. #4581
