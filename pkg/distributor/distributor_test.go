@@ -3618,8 +3618,7 @@ func prepare(t *testing.T, cfg prepConfig) ([]*Distributor, []mockIngester, []*p
 		distributorCfg.DefaultLimits.MaxInflightPushRequests = cfg.maxInflightRequests
 		distributorCfg.DefaultLimits.MaxInflightPushRequestsBytes = cfg.maxInflightRequestsBytes
 		distributorCfg.DefaultLimits.MaxIngestionRate = cfg.maxIngestionRate
-		distributorCfg.ShuffleShardingIngestersEnabled = true
-		distributorCfg.IngesterTSDBRetention = time.Hour
+		distributorCfg.ShuffleShardingLookbackPeriod = time.Hour
 
 		if cfg.forwarding {
 			distributorCfg.Forwarding.Enabled = true
